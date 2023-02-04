@@ -1,8 +1,8 @@
 
-
 ##Get the wordlist from the test smart contract
 
 > cd test
+
 > npm install
 
 > node call.js
