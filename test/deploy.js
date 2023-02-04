@@ -3,7 +3,7 @@ import { CodePromise } from '@polkadot/api-contract';
 import fs from 'fs'
 
 const code = new CodePromise(api, contractAbi, wasm);
-const tx = code.tx.new({ gasLimit: gasLimit, storageDepositLimit }, false)
+const tx = code.tx.new({ gasLimit: gasLimit, storageDepositLimit }, false);
 
 let address_contract;
 
