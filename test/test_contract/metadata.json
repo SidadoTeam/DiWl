@@ -1,0 +1,189 @@
+{
+  "source": {
+    "hash": "0x4205cfa033e4cb755377d7d3206906b19de57d28c7781400a6c0d920001f2d3e",
+    "language": "ink! 3.4.0",
+    "compiler": "rustc 1.69.0-nightly"
+  },
+  "contract": {
+    "name": "diwl_contract",
+    "version": "0.1.0",
+    "authors": [
+      "zhaojie"
+    ]
+  },
+  "V3": {
+    "spec": {
+      "constructors": [
+        {
+          "args": [
+            {
+              "label": "init_value",
+              "type": {
+                "displayName": [
+                  "bool"
+                ],
+                "type": 0
+              }
+            }
+          ],
+          "docs": [
+            "Constructor that initializes the `bool` value to the given `init_value`."
+          ],
+          "label": "new",
+          "payable": false,
+          "selector": "0x9bae9d5e"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "default",
+          "payable": false,
+          "selector": "0xed4b9d1b"
+        }
+      ],
+      "docs": [],
+      "events": [],
+      "messages": [
+        {
+          "args": [],
+          "docs": [
+            " A message that can be called on instantiated contracts.",
+            " This one flips the value of the stored `bool` from `true`",
+            " to `false` and vice versa."
+          ],
+          "label": "flip",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "bool"
+            ],
+            "type": 0
+          },
+          "selector": "0x633aa551"
+        },
+        {
+          "args": [],
+          "docs": [
+            " Simply returns the current value of our `bool`."
+          ],
+          "label": "get",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "bool"
+            ],
+            "type": 0
+          },
+          "selector": "0x2f865bd9"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "getw",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 1
+          },
+          "selector": "0x6b374afe"
+        }
+      ]
+    },
+    "storage": {
+      "struct": {
+        "fields": [
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "ty": 0
+              }
+            },
+            "name": "value"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0100000000000000000000000000000000000000000000000000000000000000",
+                "ty": 1
+              }
+            },
+            "name": "words"
+          }
+        ]
+      }
+    },
+    "types": [
+      {
+        "id": 0,
+        "type": {
+          "def": {
+            "primitive": "bool"
+          }
+        }
+      },
+      {
+        "id": 1,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 2
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "name": "word",
+                  "type": 3,
+                  "typeName": "String"
+                },
+                {
+                  "name": "level",
+                  "type": 4,
+                  "typeName": "i32"
+                },
+                {
+                  "name": "mean",
+                  "type": 3,
+                  "typeName": "String"
+                }
+              ]
+            }
+          },
+          "path": [
+            "diwl_contract",
+            "diwl_contract",
+            "WordList"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "type": {
+          "def": {
+            "primitive": "str"
+          }
+        }
+      },
+      {
+        "id": 4,
+        "type": {
+          "def": {
+            "primitive": "i32"
+          }
+        }
+      }
+    ]
+  }
+}
