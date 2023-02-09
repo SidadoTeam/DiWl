@@ -3,11 +3,14 @@ import { CodePromise } from '@polkadot/api-contract';
 import fs from 'fs'
 
 const code = new CodePromise(api, contractAbi, wasm);
-const tx = code.tx.new({ gasLimit: gasLimit, storageDepositLimit }, false);
+const tx = code.tx.default({ gasLimit: gasLimit, storageDepositLimit });
+
+
 
 let address_contract;
 
-tx.signAndSend(alicePair, async ({ contract, status }) => {
+await tx.signAndSend(alicePair, async ({ contract, status }) => {
+  console.log(status.toHuman());
   if (status.isInBlock || status.isFinalized) {
     address_contract = contract.address.toString();
     console.log("deploy contract success : " + address_contract);
@@ -17,3 +20,4 @@ tx.signAndSend(alicePair, async ({ contract, status }) => {
     console.log("deploy contract fail status: " + status);
   }
 });
+

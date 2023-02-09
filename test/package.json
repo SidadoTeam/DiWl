@@ -1,8 +1,22 @@
 {
   "type": "module",
+  "main": "test.js",
+  "scripts": {
+    "build": "webpack --config webpack.config.cjs"
+  },
   "dependencies": {
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "@babel/preset-react": "^7.10.1",
+    "@babel/register": "^7.10.3",
     "@polkadot/api": "9.13.5",
     "@polkadot/api-contract": "9.13.5",
-    "@polkadot/extension-dapp": "^0.44.7"
+    "@polkadot/extension-dapp": "^0.44.7",
+    "@types/react-dom": "^16.9.5",
+    "@types/react-router-dom": "^5.1.5",
+    "babel-loader": "^9.1.2"
+  },
+  "devDependencies": {
+    "webpack-cli": "^5.0.1"
   }
 }
