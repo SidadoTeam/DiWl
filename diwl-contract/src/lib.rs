@@ -5,6 +5,7 @@ use ink_lang as ink;
 #[ink::contract]
 mod diwl_contract {
 
+    use ink_env::debug_println;
     // use ink_env::debug_println;
     use ink_prelude::string::*;
     use ink_prelude::vec::*;
@@ -120,7 +121,6 @@ mod diwl_contract {
         //进行分组查询 一次返回500个单词 page_index start with 1
         pub fn getw_common(&self, track_index: i32, track_limit: i32) -> Vec<WordRecord> {
             let mut w_list = Vec::new();
-
             let start_count: i32 = (track_index - 1) * track_limit;
             let mut end_count = track_index * track_limit;
             if start_count >= self.c_count {

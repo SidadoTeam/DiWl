@@ -1,3 +1,5 @@
 /test/node_modules/
+/test/address_contract.txt
 /diwl-contract/target/
+/diwl-front-end/target/
 /.idea/
