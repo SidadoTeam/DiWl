@@ -3,3 +3,4 @@
 /diwl-contract/target/
 /diwl-front-end/target/
 /.idea/
+/polkadot_api/node_modules/

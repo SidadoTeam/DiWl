@@ -1,0 +1,1 @@
+cp dist/bundle.js ../diwl-front-end
