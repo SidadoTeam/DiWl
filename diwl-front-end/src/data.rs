@@ -4,6 +4,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
 
 pub static mut wlist_common: Vec<WordRecord> = Vec::new();
+pub static mut wlist_know: Option<Vec<WordRecord>> = None;
 
 #[wasm_bindgen]
 extern "C" {
@@ -17,7 +18,7 @@ pub fn getw_common_len() -> usize {
 
 pub async fn getw_common_all() {
     //todo 等待api初始化完成
-    for i in 1..3800 / 200 {
+    for i in 1..4000 / 200 {
         if getw_common(i, 200).await {
             break;
         }

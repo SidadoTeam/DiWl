@@ -11,8 +11,9 @@ categories = ["gui", "wasm", "web-programming"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-gloo = "0.8.0"
 gloo-console = "0.2.3"
+gloo-timers = {version = "0.2.6",features = ["futures"]}
+
 js-sys = "0.3.61"
 wasm-bindgen-futures = "0.4.34"
 web-sys = "0.3.61"
@@ -21,5 +22,8 @@ yew = { version="0.20", features=["csr"] }
 serde = { version = "1.0", features = ["derive"] }
 wasm-bindgen = "0.2.84"
 serde-wasm-bindgen = "0.4"
+stylist = "0.11"
+futures-util = "0.3.26"
+gloo = "0.8.0"
 
 

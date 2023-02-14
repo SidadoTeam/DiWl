@@ -3,13 +3,13 @@ import { WsProvider } from '@polkadot/rpc-provider/ws';
 import { ContractPromise } from '@polkadot/api-contract';
 import { contractAbi, address_contract } from './data.js'
 
-// const uri = "ws://localhost:9944";
+const uri = "ws://localhost:9944";
+// const uri = "wss://rpc.shibuya.astar.network";
+
 let apiPromise, api, alicePair;
 const storageDepositLimit = null;
 
 const keyring = new Keyring({ type: 'sr25519' });
-
-const uri = "wss://rpc.shibuya.astar.network";
 const provider = new WsProvider(uri);
 apiPromise = ApiPromise.create({ provider }).then((_api) => {
     api = _api;

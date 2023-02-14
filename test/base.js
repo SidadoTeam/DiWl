@@ -17,8 +17,8 @@ const contractWasm = JSON.parse(readFileSync(wasmPath, 'utf8'));
 const contractAbi = JSON.parse(readFileSync(abiMetadataPath, 'utf8'));
 
 // initialise via static create
-const uri = "wss://rpc.shibuya.astar.network";
-// const uri = "ws://localhost:9944";
+// const uri = "wss://rpc.shibuya.astar.network";
+const uri = "ws://localhost:9944";
 const provider = new WsProvider(uri);
 const api = await ApiPromise.create({ provider });
 // const api = await ApiPromise.create({ rpc: "ws://localhost:9944" });
@@ -36,8 +36,8 @@ const wasm = contractWasm.source.wasm;
 //ZfRoeLUReVfGf92nx2GWfTSMEZ9VFAZQxUPQgdAq8T5AvUe
 // maximum gas to be consumed for the instantiation. if limit is too small the instantiation will fail.
 const gasLimit = api.registry.createType('WeightV2', {
-    refTime: 11168207347 * 1,
-    proofSize: 131072 * 1
+    refTime: 11168207347 * 40,
+    proofSize: 131072 * 40
 })
 
 const storageDepositLimit = null;
