@@ -1,4 +1,5 @@
 use crate::data::*;
+use gloo::utils::document;
 use gloo_console::log;
 use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
@@ -14,6 +15,12 @@ pub fn app() -> Html {
             <p class = "ytp-caption-segment">{"Simulated YouTube captioning"}</p>
             <p class = "ytp-caption-segment">{"Hello welcome"}</p>
             <div style = "margin-top:10px" />
+
+            <p class = "test-div"><nobr>{"hello"}</nobr>{"Simulated YouTube captioning"}</p>
+
+            <div>{"onclick"}</div>
+            <div style = "margin-top:10px" />
+
             <p>
             <button onclick={Callback::from( |_| {
 
@@ -21,14 +28,27 @@ pub fn app() -> Html {
                 //The night gave me black eyes, but I used to look for light
                 //let w = String::from("The night gave me black eyes, but I used to look for light").split(" ");
                 //w.into_iter();
-                spawn_local(async{
-                    //getw_common_all().await;
-                    log!(getw_common_len());
-                });
+                // spawn_local(async{
+                //     //getw_common_all().await;
+                //     log!(getw_common_len());
+                // });
+                test_find();
             })}>
                 { "Click me!" }
             </button>
             </p>
         </div>
     }
+}
+
+fn test_find() {
+    let caption = document().get_elements_by_class_name("test-div");
+    let div = caption.get_with_index(0).unwrap();
+    log!("div child_nodes len:", div.child_nodes().length());
+    log!("div children len:", div.children().length());
+
+    let child_node2 = div.child_nodes().get(0).unwrap();
+    log!("child_node2:", &child_node2);
+    let node_value = child_node2.node_value().unwrap();
+    log!("node value:", node_value);
 }
