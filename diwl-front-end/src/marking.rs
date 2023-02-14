@@ -5,8 +5,10 @@ use futures_util::stream::StreamExt;
 use gloo::utils::document;
 use gloo_console::log;
 use gloo_timers::future::TimeoutFuture;
+use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::spawn_local;
-use web_sys::HtmlCollection;
+use web_sys::{Element, HtmlCollection, MouseEvent};
+use yew::{function_component, html, Callback, Html, Properties};
 
 pub fn init() {
     // if getw_common_len() == 0 {
@@ -20,7 +22,7 @@ pub fn init() {
         //     last_lines = process(last_lines);
         //     TimeoutFuture::new(1000).await;
         // }
-        for i in 0..50 {
+        for i in 0..500 {
             last_lines = process(last_lines);
             TimeoutFuture::new(1000).await;
         }
@@ -55,7 +57,8 @@ fn process(_last_lines: Option<[String; 4]>) -> Option<[String; 4]> {
                         current_line.append(&mut vals);
                     }
                 } else {
-                    let _val = child.node_value().unwrap();
+                    //log!("no has_child_nodes:", &child);
+                    let _val = child.node_value().unwrap_or_default();
                     let val = _val.trim();
                     if !val.is_empty() {
                         //log!("no has_child_nodes:", val);
@@ -71,7 +74,7 @@ fn process(_last_lines: Option<[String; 4]>) -> Option<[String; 4]> {
             //log!("last_line line:", last_line);
             let last_ll: Vec<&str> = last_line.split(" ").collect();
             let mut has_change = false;
-            let mut res_line = String::new();
+            let mut res_line: Vec<String> = Vec::new();
             let mut pure_res_line = String::new();
             for (x, word) in current_line.iter().enumerate() {
                 let last_word = last_ll.get(x);
@@ -86,24 +89,48 @@ fn process(_last_lines: Option<[String; 4]>) -> Option<[String; 4]> {
                     //查询单词列表 获取解释
                     //添加点击事件
                     pure_word = pure_word + "()";
-                    _word = "<nobr onclick = \"console.log('".to_string()
-                        + &pure_word
-                        + "')\">"
-                        + &pure_word
-                        + "</nobr>";
+                    // _word = "<nobr onclick = \"console.log('".to_string()
+                    //     + &pure_word
+                    //     + "')\">"
+                    //     + &pure_word
+                    //     + "</nobr>";
                     has_change = true;
                 }
 
-                res_line = res_line + " " + &_word;
+                //res_line = res_line + " " + &_word;
+                let _pure_word = String::new() + &pure_word + " ";
+                res_line.push(String::from(&_pure_word));
                 pure_res_line = pure_res_line + " " + &pure_word;
             }
-            res_line = res_line.trim().to_owned();
+            //res_line = res_line.trim().to_owned();
             pure_res_line = pure_res_line.trim().to_owned();
-            if has_change {
-                cc.set_inner_html(&res_line);
+            if has_change && !res_line.is_empty() {
+                // cc.set_inner_html(&res_line);
+                //log!("render: res_line", res_line.len());
+                let props = Props { list: res_line };
+                yew::Renderer::<CaptionComp>::with_root_and_props(cc, props).render();
             }
             last_lines[index] = pure_res_line;
         }
     }
     Some(last_lines)
+}
+
+#[derive(Properties, PartialEq)]
+pub struct Props {
+    pub list: Vec<String>,
+}
+
+#[function_component(CaptionComp)]
+fn caption_comp(props: &Props) -> Html {
+    html! {
+        {
+            props.list.clone().into_iter().map(|name| {
+                html!{<nobr key = {name.clone()} onclick={Callback::from(|e:MouseEvent| {
+                    let target = e.target().unwrap();
+                    log!(target.unchecked_into::<Element>().inner_html());
+                })} >{name}</nobr>}
+            }).collect::<Html>()
+        }
+    }
 }

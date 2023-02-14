@@ -1,7 +1,9 @@
 use crate::data::*;
 use gloo::utils::document;
 use gloo_console::log;
+use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::spawn_local;
+use web_sys::{Node, HtmlElement, Element};
 use yew::prelude::*;
 
 #[function_component(App)]
@@ -23,7 +25,6 @@ pub fn app() -> Html {
 
             <p>
             <button onclick={Callback::from( |_| {
-
                 // 追加单词
                 //The night gave me black eyes, but I used to look for light
                 //let w = String::from("The night gave me black eyes, but I used to look for light").split(" ");
@@ -34,7 +35,7 @@ pub fn app() -> Html {
                 // });
                 test_find();
             })}>
-                { "Click me!" }
+                { "TestComp" }
             </button>
             </p>
         </div>
@@ -49,6 +50,31 @@ fn test_find() {
 
     let child_node2 = div.child_nodes().get(0).unwrap();
     log!("child_node2:", &child_node2);
-    let node_value = child_node2.node_value().unwrap();
-    log!("node value:", node_value);
+    //let node_value = child_node2.node_value().unwrap();
+    //log!("node value:", node_value);
+    let props = Props {
+        list: vec!["hello1".to_string(), "hello2".to_string()],
+    };
+    yew::Renderer::<TestComp>::with_root_and_props(div, props).render();
+}
+
+#[derive(Properties, PartialEq)]
+pub struct Props {
+    pub list: Vec<String>,
+}
+
+#[function_component(TestComp)]
+fn test_html(props: &Props) -> Html {
+    html! {
+        <nobr>
+            {
+                props.list.clone().into_iter().map(|name| {
+                    html!{<p key = {name.clone()} onclick={Callback::from(|e:MouseEvent| {
+                        let target = e.target().unwrap();
+                        log!(target.unchecked_into::<Element>().inner_html());
+                    })} >{name}</p>}
+                }).collect::<Html>()
+            }
+        </nobr>
+    }
 }
