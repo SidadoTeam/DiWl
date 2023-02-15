@@ -7,7 +7,7 @@ use gloo_console::log;
 use gloo_timers::future::TimeoutFuture;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::spawn_local;
-use web_sys::{Element, HtmlCollection, MouseEvent};
+use web_sys::{Element, MouseEvent};
 use yew::{function_component, html, Callback, Html, Properties};
 
 pub fn init() {
@@ -22,9 +22,10 @@ pub fn init() {
         //     last_lines = process(last_lines);
         //     TimeoutFuture::new(1000).await;
         // }
-        for i in 0..500 {
+        for i in 0..5000 {
+            log!("poll", i);
             last_lines = process(last_lines);
-            TimeoutFuture::new(1000).await;
+            TimeoutFuture::new(300).await;
         }
     });
 }
@@ -49,26 +50,29 @@ fn process(_last_lines: Option<[String; 4]>) -> Option<[String; 4]> {
                 if child.has_child_nodes() {
                     //得到里面的字符串
                     //log!("has_child_nodes:", child.first_child());
-                    let _val = child.first_child().unwrap().node_value().unwrap();
-                    let val = _val.trim();
-                    if !val.is_empty() {
-                        //log!("has_child_nodes:", val);
-                        let mut vals = val.split(" ").map(|e| String::from(e)).collect();
-                        current_line.append(&mut vals);
+                    let _child = child.first_child();
+                    if _child.is_some() {
+                        let _val = _child.unwrap().node_value().unwrap_or_default();
+                        let val = _val.trim();
+                        if !val.is_empty() {
+                            //log!("has_child_nodes:", val);
+                            let mut vals = val.split(" ").map(|e| String::from(e)).collect();
+                            current_line.append(&mut vals);
+                        }
                     }
                 } else {
                     //log!("no has_child_nodes:", &child);
                     let _val = child.node_value().unwrap_or_default();
                     let val = _val.trim();
                     if !val.is_empty() {
-                        //log!("no has_child_nodes:", val);
+                        log!("no has_child_nodes:", val);
                         let mut vals = val.split(" ").map(|e| String::from(e)).collect();
                         current_line.append(&mut vals);
                     }
                 }
             }
 
-            //log!("current line:", &line);
+            // log!("current line:", &line);
             let __last_lines = _last_lines.clone().unwrap_or_default();
             let last_line = &__last_lines[index];
             //log!("last_line line:", last_line);
@@ -88,12 +92,8 @@ fn process(_last_lines: Option<[String; 4]>) -> Option<[String; 4]> {
                     // todo 添加回调函数
                     //查询单词列表 获取解释
                     //添加点击事件
-                    pure_word = pure_word + "()";
-                    // _word = "<nobr onclick = \"console.log('".to_string()
-                    //     + &pure_word
-                    //     + "')\">"
-                    //     + &pure_word
-                    //     + "</nobr>";
+                    // pure_word = pure_word + "()";
+                    pure_word = format!("{}({})",pure_word,pure_word);
                     has_change = true;
                 }
 
@@ -108,7 +108,7 @@ fn process(_last_lines: Option<[String; 4]>) -> Option<[String; 4]> {
                 // cc.set_inner_html(&res_line);
                 //log!("render: res_line", res_line.len());
                 let props = Props { list: res_line };
-                yew::Renderer::<CaptionComp>::with_root_and_props(cc, props).render();
+                yew::Renderer::<CaptionCompo>::with_root_and_props(cc, props).render();
             }
             last_lines[index] = pure_res_line;
         }
@@ -121,8 +121,8 @@ pub struct Props {
     pub list: Vec<String>,
 }
 
-#[function_component(CaptionComp)]
-fn caption_comp(props: &Props) -> Html {
+#[function_component(CaptionCompo)]
+fn caption_compo(props: &Props) -> Html {
     html! {
         {
             props.list.clone().into_iter().map(|name| {

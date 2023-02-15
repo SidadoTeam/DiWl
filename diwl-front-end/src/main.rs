@@ -17,7 +17,7 @@ use yew::prelude::*;
 
 fn main() {
     // let object = JsValue::from("world");
-    log!("Hello Yew");
+    log!("Hello Yew 1");
     yew::Renderer::<App>::new().render();
     //增加DOM操作
     let div: Element = document().create_element("div").unwrap();
@@ -60,7 +60,7 @@ fn main() {
         log!(c);
     }
 
-    init();
+    //init();
 
     spawn_local(async {
         getw_common_all().await;

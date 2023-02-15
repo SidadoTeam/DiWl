@@ -1,9 +1,10 @@
 use crate::data::*;
 use gloo::utils::document;
 use gloo_console::log;
+use regex::Regex;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::spawn_local;
-use web_sys::{Node, HtmlElement, Element};
+use web_sys::{Element, HtmlElement, Node};
 use yew::prelude::*;
 
 #[function_component(App)]
@@ -33,7 +34,10 @@ pub fn app() -> Html {
                 //     //getw_common_all().await;
                 //     log!(getw_common_len());
                 // });
-                test_find();
+                // test_find(); 1,loneliness 2,curtail
+                let w = query_word("loneliness").unwrap_or_default();
+                log!(w);
+                // test_short_mean_all();
             })}>
                 { "TestComp" }
             </button>
