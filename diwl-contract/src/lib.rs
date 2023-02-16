@@ -57,21 +57,29 @@ mod diwl_contract {
 
         #[ink(message)]
         pub fn getw_user(&self, track_index: i32, track_limit: i32) -> Vec<WordRecord> {
+            debug_println!("getw_user");
             let mut w_list = Vec::new();
             //先取用户词库里的词
             let _info = self.user_info.get(self.env().caller());
             if _info.is_none() {
+                debug_println!("_info.is_none");
                 return w_list;
             }
             let user_info = _info.unwrap();
             let start_count: i32 = (track_index - 1) * track_limit;
             let mut end_count = track_index * track_limit;
+
+            debug_println!("user_info.c_count,{}", user_info.c_count);
+
             if start_count >= user_info.c_count {
+                debug_println!("start_count >= user_info.c_count");
                 return w_list;
             }
-            if end_count > self.c_count {
-                end_count = self.c_count;
+            if end_count > user_info.c_count {
+                end_count = user_info.c_count;
             }
+            debug_println!("count,{},{}", start_count, end_count);
+
             for x in start_count..end_count {
                 let w_record = self.user_wlist.get((self.env().caller(), x));
                 if w_record.is_some() {
@@ -105,8 +113,8 @@ mod diwl_contract {
             if start_count >= user_info.c_count {
                 return w_list;
             }
-            if end_count > self.c_count {
-                end_count = self.c_count;
+            if end_count > user_info.c_count {
+                end_count = user_info.c_count;
             }
             for x in start_count..end_count {
                 let w_record = self.user_wlist.get((other_id, x));
@@ -158,11 +166,30 @@ mod diwl_contract {
                     auth_account: Vec::new(),
                 };
                 self.user_info.insert(self.env().caller(), &user_info);
+            } else {
+                user_info = _user_info.unwrap();
             }
-            user_info = _user_info.unwrap();
             self.user_wlist
                 .insert((self.env().caller(), user_info.c_count), &word);
             user_info.c_count = user_info.c_count + 1;
+            self.user_info.insert(self.env().caller(), &user_info);
+        }
+
+        #[ink(message)]
+        pub fn user_word_update(&mut self, word: WordRecord, id: i32) -> bool {
+            let _user_info = self.user_info.get(self.env().caller());
+            if _user_info.is_none() {
+                return false;
+            }
+            let old_record = self.user_wlist.get((self.env().caller(), id));
+            if old_record.is_none() {
+                return false;
+            }
+            if old_record.unwrap().word != word.word {
+                return false;
+            }
+            self.user_wlist.insert((self.env().caller(), id), &word);
+            return true;
         }
 
         #[ink(message)]

@@ -10,13 +10,15 @@ use yew::prelude::*;
 #[function_component(App)]
 pub fn app() -> Html {
     html! {
-        <div>
-            <img class="logo" src="https://yew.rs/img/logo.png" alt="Yew logo" />
+        <div style="padding:40px">
+            // <img class="logo" src="https://yew.rs/img/logo.png" alt="Yew logo" />
             <h1>{ "Hello World!" }</h1>
             <span class="subtitle text-red-500">{ "from Yew with " }<i class="heart" /></span>
             <div style = "margin-top:10px" />
-            <p class = "ytp-caption-segment">{"Simulated YouTube captioning"}</p>
-            <p class = "ytp-caption-segment">{"Hello welcome"}</p>
+            <div>
+                <p class = "ytp-caption-segment">{"Simulated YouTube captioning"}</p>
+                <p class = "ytp-caption-segment">{"Hello welcome go going"}</p>
+            </div>
             <div style = "margin-top:10px" />
 
             <p class = "test-div"><nobr>{"hello"}</nobr>{"Simulated YouTube captioning"}</p>

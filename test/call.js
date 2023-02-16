@@ -5,7 +5,7 @@ import fs from 'fs'
 const address_contract = fs.readFileSync(__dirname + "address_contract.txt", "utf-8");
 const contract = new ContractPromise(api, contractAbi, address_contract);
 
-const { gasRequired, storageDeposit, debugMessage, result, output } = await contract.query.getwCommon(
+const { gasRequired, storageDeposit, debugMessage, result, output } = await contract.query.getwUser(
     alicePair.address, { gasLimit: gasLimit, storageDepositLimit: null }, 1, 200
 );
 

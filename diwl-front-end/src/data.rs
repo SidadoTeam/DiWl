@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
 
 pub static mut wlist_common: Vec<WordRecord> = Vec::new();
-pub static mut wlist_know: Option<Vec<WordRecord>> = None;
+pub static mut wlist_user: Vec<WordRecord> = Vec::new();
 pub static max_cut_length: usize = 5;
 pub static max_level: usize = 1;
 
@@ -14,6 +14,22 @@ pub static max_level: usize = 1;
 extern "C" {
     #[wasm_bindgen]
     fn getwCommon(i: i32, j: i32) -> JsValue;
+
+    #[wasm_bindgen]
+    fn getwUser(i: i32, j: i32) -> JsValue;
+
+    #[wasm_bindgen]
+    fn userWordIn(word: String, mean: String, level: String) -> JsValue;
+
+    #[wasm_bindgen]
+    fn userWordUpdate(word: String, mean: String, level: String, id: i32) -> JsValue;
+}
+
+pub async fn user_word_in(word: WordRecord) {
+    userWordIn(word.word, word.mean, word.level);
+}
+pub async fn user_word_update(word: WordRecord, id: i32) {
+    userWordUpdate(word.word, word.mean, word.level, id);
 }
 
 pub fn getw_common_len() -> usize {
@@ -41,6 +57,18 @@ async fn getw_common(start_i: i32, page_size: i32) -> bool {
     ret
 }
 
+async fn getw_user(start_i: i32, page_size: i32) -> bool {
+    let x = getwUser(start_i, page_size);
+    let promise = js_sys::Promise::resolve(&x);
+    let res = JsFuture::from(promise).await.unwrap_or_default();
+    let mut ress: Vec<WordRecord> = from_value(res).unwrap_or_default();
+    let ret = ress.len() == 0;
+    unsafe {
+        wlist_user.append(&mut ress);
+    }
+    ret
+}
+
 pub fn query_word(in_word: &str) -> Option<String> {
     unsafe {
         let w = wlist_common.iter().find(|w| w.word == in_word);
@@ -61,7 +89,19 @@ pub fn query_word(in_word: &str) -> Option<String> {
     None
 }
 
-fn get_short_mean(in_str: &str) -> String {
+pub fn query_word_record(in_word: &str) -> Option<&WordRecord> {
+    unsafe {
+        let w = wlist_common.iter().find(|w| w.word == in_word);
+        if w.is_none() {
+            return None;
+        } else {
+            return Some(w.unwrap().clone());
+        }
+    }
+    None
+}
+
+pub fn get_short_mean(in_str: &str) -> String {
     //n.农作物
     //vt.压碎，碾碎；镇压，压倒
     //n.&v.哭
@@ -84,6 +124,7 @@ fn get_first_cn(split: &str, in_str: &str) -> String {
     let mut tmp = in_str.split(split);
     String::from(tmp.next().unwrap())
 }
+
 fn cut_str(in_str: &str, cut_size: usize) -> String {
     let text_vec = in_str.chars().collect::<Vec<_>>();
     if text_vec.len() > cut_size {
@@ -108,9 +149,9 @@ pub fn test_short_mean_all() {
 #[warn(non_snake_case)]
 #[derive(Serialize, Deserialize)]
 pub struct WordRecord {
-    word: String,
-    level: String, //分级
-    mean: String,  //解释
+    pub word: String,
+    pub level: String, //分级
+    pub mean: String,  //解释
     hitCount: String,
     tag: String,
     nfts: Vec<String>,

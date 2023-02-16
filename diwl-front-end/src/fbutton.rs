@@ -1,8 +1,12 @@
 use crate::data::*;
+use crate::ui_tools::*;
 use gloo::utils::document;
 use gloo_console::log;
+use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
+use web_sys::{Element, MouseEvent};
+
 
 #[function_component(FButton)]
 pub fn fbutton() -> Html {
@@ -21,9 +25,12 @@ pub fn fbutton() -> Html {
     html! {
         <main>
             <div class={String::from(sty.get_class_name())} >
-            <button class="text-white" onclick={Callback::from( |_| {
-               log!("Hello");
-               foo();
+            <button class="text-white" onclick={Callback::from( |e:MouseEvent| {
+            //    log!(e);
+            //    let _target = e.target().unwrap();
+            //    let target = _target.unchecked_into::<Element>();
+            //    log!(target);
+                add_popup("m_popup");
             })}>
                 { "Click me!" }
             </button>

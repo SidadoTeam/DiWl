@@ -23,7 +23,7 @@ pub fn init() {
         //     TimeoutFuture::new(1000).await;
         // }
         for i in 0..5000 {
-            log!("poll", i);
+            // log!("poll", i);
             last_lines = process(last_lines);
             TimeoutFuture::new(300).await;
         }
@@ -65,7 +65,7 @@ fn process(_last_lines: Option<[String; 4]>) -> Option<[String; 4]> {
                     let _val = child.node_value().unwrap_or_default();
                     let val = _val.trim();
                     if !val.is_empty() {
-                        log!("no has_child_nodes:", val);
+                        //log!("no has_child_nodes:", val);
                         let mut vals = val.split(" ").map(|e| String::from(e)).collect();
                         current_line.append(&mut vals);
                     }
@@ -93,14 +93,17 @@ fn process(_last_lines: Option<[String; 4]>) -> Option<[String; 4]> {
                     //查询单词列表 获取解释
                     //添加点击事件
                     // pure_word = pure_word + "()";
-                    pure_word = format!("{}({})",pure_word,pure_word);
-                    has_change = true;
+                    let q_word = query_word(&pure_word);
+                    if q_word.is_some() {
+                        pure_word = format!("{}({})", pure_word, q_word.unwrap_or_default());
+                        has_change = true;
+                    }
                 }
 
                 //res_line = res_line + " " + &_word;
                 let _pure_word = String::new() + &pure_word + " ";
                 res_line.push(String::from(&_pure_word));
-                pure_res_line = pure_res_line + " " + &pure_word;
+                pure_res_line = pure_res_line + "  " + &pure_word;
             }
             //res_line = res_line.trim().to_owned();
             pure_res_line = pure_res_line.trim().to_owned();

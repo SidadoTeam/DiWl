@@ -16,19 +16,22 @@ apiPromise = ApiPromise.create({ provider }).then((_api) => {
     alicePair = keyring.addFromUri('//Alice');
 });
 
-// //构造异步的请求函数
-var getwCommon = async function (page_index, page_size) {
+async function init() {
     if (api == null) {
         console.error("api is null");
         // return [];
         await apiPromise;
     }
-    const gasLimit = api.registry.createType('WeightV2', {
+
+}
+
+export async function getwCommon(page_index, page_size) {
+    await init();
+    let gasLimit = api.registry.createType('WeightV2', {
         refTime: 11168207347 * 40,
         proofSize: 131072 * 40
-    })
-
-    const contract = new ContractPromise(api, contractAbi, address_contract);
+    });
+    let contract = new ContractPromise(api, contractAbi, address_contract);
     const { gasRequired, storageDenposit, debugMessage, result, output } = await contract.query.getwCommon(
         alicePair.address, { gasLimit: gasLimit, storageDepositLimit: null }, page_index, page_size
     );
@@ -41,12 +44,73 @@ var getwCommon = async function (page_index, page_size) {
     return []
 }
 
-export { getwCommon, apiPromise }
+export async function getwUser(page_index, page_size) {
+    await init();
+    let gasLimit = api.registry.createType('WeightV2', {
+        refTime: 11168207347 * 40,
+        proofSize: 131072 * 40
+    });
+    let contract = new ContractPromise(api, contractAbi, address_contract);
+    const { gasRequired, storageDenposit, debugMessage, result, output } = await contract.query.getwUser(
+        alicePair.address, { gasLimit: gasLimit, storageDepositLimit: null }, page_index, page_size
+    );
+    if (debugMessage != null && !debugMessage.isEmpty)
+        console.log(debugMessage.toHuman());
+    if (output != null) {
+        //console.log(output.toHuman());
+        return output.toHuman();
+    }
+    return []
+}
+
+export async function userWordIn(word, mean, level) {
+    await init();
+    let gasLimit = api.registry.createType('WeightV2', {
+        refTime: 11168207347 * 1,
+        proofSize: 131072 * 1
+    });
+    let contract = new ContractPromise(api, contractAbi, address_contract);
+    await contract.tx
+        .userWordIn({ gasLimit: gasLimit }, { word: word, mean: mean, level: level })
+        .signAndSend(alicePair, async r => {
+            if (r.status.isInBlock || r.status.isFinalized) {
+                if (r.dispatchError != null) {
+                    console.log(r.toHuman());
+                } else {
+                    console.log("ok");
+                }
+            }
+        });
+}
+
+export async function userWordUpdate(word, mean, level, id) {
+    await init();
+    let gasLimit = api.registry.createType('WeightV2', {
+        refTime: 11168207347 * 40,
+        proofSize: 131072 * 40
+    });
+    let contract = new ContractPromise(api, contractAbi, address_contract);
+    await contract.tx
+        .userWordUpdate({ gasLimit: gasLimit }, { word: word, mean: mean, level: level }, id)
+        .signAndSend(alicePair, async r => {
+            if (r.status.isInBlock || r.status.isFinalized) {
+                if (r.dispatchError != null) {
+                    console.log(r.toHuman());
+                } else {
+                    console.log("ok");
+                }
+            }
+        });
+}
+
+
+export { apiPromise }
 
 console.log("hello lib.js");
 console.log(uri);
 try {
     window.getwCommon = getwCommon;
-}catch{
-    
+    window.getwUser = getwUser;
+} catch {
+
 }

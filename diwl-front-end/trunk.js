@@ -296,6 +296,10 @@ async function load(module, imports) {
 function getImports() {
     const imports = {};
     imports.wbg = {};
+    imports.wbg.__wbg_getwCommon_7dbb53f234e2fbd3 = function(arg0, arg1) {
+        const ret = getwCommon(arg0, arg1);
+        return addHeapObject(ret);
+    };
     imports.wbg.__wbindgen_is_undefined = function(arg0) {
         const ret = getObject(arg0) === undefined;
         return ret;
@@ -327,10 +331,6 @@ function getImports() {
     };
     imports.wbg.__wbindgen_object_clone_ref = function(arg0) {
         const ret = getObject(arg0);
-        return addHeapObject(ret);
-    };
-    imports.wbg.__wbg_getwCommon_7dbb53f234e2fbd3 = function(arg0, arg1) {
-        const ret = getwCommon(arg0, arg1);
         return addHeapObject(ret);
     };
     imports.wbg.__wbg_getwithrefkey_15c62c2b8546208d = function(arg0, arg1) {
@@ -801,16 +801,16 @@ function getImports() {
         const ret = wasm.memory;
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper7626 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 384, __wbg_adapter_36);
+    imports.wbg.__wbindgen_closure_wrapper12801 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 651, __wbg_adapter_36);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper7853 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 399, __wbg_adapter_39);
+    imports.wbg.__wbindgen_closure_wrapper13012 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 666, __wbg_adapter_39);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper8010 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 418, __wbg_adapter_42);
+    imports.wbg.__wbindgen_closure_wrapper13169 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 685, __wbg_adapter_42);
         return addHeapObject(ret);
     };
 
@@ -855,3 +855,4 @@ async function init(input) {
 
     return finalizeInit(instance, module);
 }
+
