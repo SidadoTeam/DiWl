@@ -1,6 +1,7 @@
 use crate::popup_window::*;
 use gloo::utils::document;
-use web_sys::{Element, Node};
+use wasm_bindgen::{prelude::Closure, JsCast};
+use web_sys::{Element, HtmlElement, Node};
 
 //添加和移除弹出框
 
@@ -39,4 +40,17 @@ pub fn create_element(element_id: &str) {
     div.set_id(element_id);
     let node: Node = div.into();
     let _ = document().body().unwrap().append_child(&node);
+}
+
+pub fn add_event_listener() {
+    let a = Closure::<dyn FnMut()>::new(move || {
+        add_popup("m_popup");
+    });
+    let caption = document().get_elements_by_class_name("ytp-caption-segment");
+    let e = caption.get_with_index(0).unwrap();
+    let ee = e.parent_element().unwrap();
+    ee.dyn_ref::<HtmlElement>()
+        .expect("#green-square be an `HtmlElement`")
+        .set_onclick(Some(a.as_ref().unchecked_ref()));
+    a.forget();
 }

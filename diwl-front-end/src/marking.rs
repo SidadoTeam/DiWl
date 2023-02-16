@@ -11,19 +11,10 @@ use web_sys::{Element, MouseEvent};
 use yew::{function_component, html, Callback, Html, Properties};
 
 pub fn init() {
-    // if getw_common_len() == 0 {
-    //     return;
-    // }
     //启动定时器
     spawn_local(async {
         let mut last_lines: Option<[String; 4]> = None;
-        // loop {
-        //     // log!("hello");
-        //     last_lines = process(last_lines);
-        //     TimeoutFuture::new(1000).await;
-        // }
-        for i in 0..5000 {
-            // log!("poll", i);
+        loop {
             last_lines = process(last_lines);
             TimeoutFuture::new(300).await;
         }

@@ -25,18 +25,54 @@ extern "C" {
     fn userWordUpdate(word: String, mean: String, level: String, id: i32) -> JsValue;
 }
 
-pub async fn user_word_in(word: WordRecord) {
-    userWordIn(word.word, word.mean, word.level);
+pub async fn user_word_in(word: String, mean: String, level: String) {
+    let x = userWordIn(word, mean, level);
+    let promise = js_sys::Promise::resolve(&x);
+    JsFuture::from(promise).await.unwrap_or_default();
 }
-pub async fn user_word_update(word: WordRecord, id: i32) {
-    userWordUpdate(word.word, word.mean, word.level, id);
+
+pub async fn user_word_update(word: String, mean: String, level: String, id: i32) {
+    let x = userWordUpdate(word, mean, level, id);
+    let promise = js_sys::Promise::resolve(&x);
+    JsFuture::from(promise).await.unwrap_or_default();
+}
+
+async fn getw_user(start_i: i32, page_size: i32) -> bool {
+    let x = getwUser(start_i, page_size);
+    let promise = js_sys::Promise::resolve(&x);
+    let res = JsFuture::from(promise).await.unwrap_or_default();
+    let mut ress: Vec<WordRecord> = from_value(res).unwrap_or_default();
+    let ret = ress.len() == 0;
+    unsafe {
+        wlist_user.append(&mut ress);
+    }
+    ret
+}
+
+pub fn getw_user_len() -> usize {
+    unsafe { wlist_user.len() }
 }
 
 pub fn getw_common_len() -> usize {
     unsafe { wlist_common.len() }
 }
 
+pub async fn getw_user_all() {
+    //todo 等待api初始化完成
+    unsafe {
+        wlist_user.clear();
+    }
+    for i in 1..4000 / 200 {
+        if getw_user(i, 200).await {
+            break;
+        }
+    }
+}
+
 pub async fn getw_common_all() {
+    unsafe {
+        wlist_common.clear();
+    }
     //todo 等待api初始化完成
     for i in 1..4000 / 200 {
         if getw_common(i, 200).await {
@@ -57,30 +93,19 @@ async fn getw_common(start_i: i32, page_size: i32) -> bool {
     ret
 }
 
-async fn getw_user(start_i: i32, page_size: i32) -> bool {
-    let x = getwUser(start_i, page_size);
-    let promise = js_sys::Promise::resolve(&x);
-    let res = JsFuture::from(promise).await.unwrap_or_default();
-    let mut ress: Vec<WordRecord> = from_value(res).unwrap_or_default();
-    let ret = ress.len() == 0;
-    unsafe {
-        wlist_user.append(&mut ress);
-    }
-    ret
-}
-
 pub fn query_word(in_word: &str) -> Option<String> {
     unsafe {
-        let w = wlist_common.iter().find(|w| w.word == in_word);
+        //先在用户词典里查找
+        let mut w = None;
+        if w.is_some() {
+            w = wlist_user.iter().find(|w| w.word == in_word);
+        } else {
+            w = wlist_common.iter().find(|w| w.word == in_word);
+        }
         if w.is_none() {
             return None;
         }
         let w = w.unwrap();
-        // let _int_level = w.level.parse();
-        // if _int_level.is_err() {
-        //     return None;
-        // }
-        // let int_level: usize = _int_level.unwrap();
         if w.level >= max_level.to_string() {
             let mean = get_short_mean(&w.mean);
             return Some(mean);
@@ -89,16 +114,19 @@ pub fn query_word(in_word: &str) -> Option<String> {
     None
 }
 
-pub fn query_word_record(in_word: &str) -> Option<&WordRecord> {
+pub fn query_word_record(in_word: &str) -> (Option<WordRecord>, i32) {
     unsafe {
-        let w = wlist_common.iter().find(|w| w.word == in_word);
-        if w.is_none() {
-            return None;
-        } else {
-            return Some(w.unwrap().clone());
+        let ww = wlist_user.iter().enumerate().find(|w| w.1.word == in_word);
+        if ww.is_some() {
+            return (Some(ww.unwrap().1.clone()), ww.unwrap().0 as i32);
         }
+
+        let w = wlist_common.iter().find(|w| w.word == in_word);
+        if w.is_some() {
+            return (Some(w.unwrap().clone()), -1);
+        }
+        return (None, -1);
     }
-    None
 }
 
 pub fn get_short_mean(in_str: &str) -> String {
@@ -147,12 +175,12 @@ pub fn test_short_mean_all() {
 }
 
 #[warn(non_snake_case)]
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize,Clone)]
 pub struct WordRecord {
     pub word: String,
     pub level: String, //分级
     pub mean: String,  //解释
-    hitCount: String,
-    tag: String,
-    nfts: Vec<String>,
+    pub hitCount: String,
+    pub tag: String,
+    pub nfts: Vec<String>,
 }

@@ -111,6 +111,8 @@ console.log(uri);
 try {
     window.getwCommon = getwCommon;
     window.getwUser = getwUser;
+    window.userWordIn = userWordIn;
+    window.userWordUpdate = userWordUpdate;
 } catch {
 
 }

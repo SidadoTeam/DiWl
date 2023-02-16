@@ -17,7 +17,7 @@ pub fn app() -> Html {
             <div style = "margin-top:10px" />
             <div>
                 <p class = "ytp-caption-segment">{"Simulated YouTube captioning"}</p>
-                <p class = "ytp-caption-segment">{"Hello welcome go going"}</p>
+                <p class = "ytp-caption-segment">{"hello welcome go going"}</p>
             </div>
             <div style = "margin-top:10px" />
 

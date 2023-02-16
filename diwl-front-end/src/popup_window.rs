@@ -31,7 +31,21 @@ pub fn popup(props: &PopProps) -> Html {
             }
         }
     }
-    let word_record = query_word_record(&*selected_word);
+    let (word_record, word_index) = query_word_record(&*selected_word);
+
+    let fn_ignore = fn_btn_callback(
+        word_record.clone(),
+        selected_word.clone(),
+        word_index,
+        "0".to_string(),
+    );
+
+    let fn_pickup = fn_btn_callback(
+        word_record.clone(),
+        selected_word.clone(),
+        word_index,
+        "3".to_string(),
+    );
 
     let mut word_html_list = Vec::new();
     for name in word_list {
@@ -51,13 +65,13 @@ pub fn popup(props: &PopProps) -> Html {
         let word_html = html! {<span onclick={word_onclick} class={css} >{name}</span>};
         word_html_list.push(word_html);
     }
+
     html! {
         // <div class ={String::from(sty.get_class_name())}>
         <div class ="card opx-80" >
             <div class="" >
             <button class="button color-white-1 font-size-15" onclick={Callback::from( |e:MouseEvent| {
-                add_event_listener();
-                //remove_popup("m_popup");
+                remove_popup("m_popup");
             })}>
                 { "Close" }
             </button>
@@ -68,26 +82,53 @@ pub fn popup(props: &PopProps) -> Html {
 
             <div class="word-card">
                 //显示选中的单词
-                <div style="font-size:20px;margin-top:1px;">{selected_word.to_string()}</div>
+                <div style="font-size:24px;margin-top:1px;">{selected_word.to_string()}</div>
 
                 //显示单词意思
                 if word_record.is_some(){
-                    <div style = "margin-top:10px">{word_record.unwrap().mean.clone()}</div>
-                    <div style = "margin-top:5px">{"short: "}{get_short_mean(&word_record.unwrap().mean.clone())}</div>
-                    <div style = "margin-top:5px">{"level: "}{word_record.unwrap().level.to_string()}</div>
+                    <div style = "margin-top:10px">{word_record.clone().unwrap().mean.clone()}</div>
+                    <div style = "margin-top:5px">{"short: "}{get_short_mean(&word_record.clone().unwrap().mean.clone())}</div>
+                    <div style = "margin-top:5px;font-weight:500" class ="color-yell">{"level: "}{word_record.unwrap().level.to_string()}</div>
                 }else{
                     <div style = "margin-top:10px;color:gray;">{"unknown word!"}</div>
                 }
 
-                <p style="margin-top:5px; " class="align-buttom-right">
-                    <button class="button diwl-button bg-color-black">{"Ignore this"}</button>
+                <p style="margin-top:5px;" class="align-buttom-right">
+                    <button onclick={fn_ignore} class="button diwl-button bg-color-black">{"Ignore this"}</button>
                     <span style="margin-left:20px" />
-                    <button class="button diwl-button">{"Pick up"}</button>
+                    <button onclick={fn_pickup} class="button diwl-button">{"Pick up"}</button>
                 </p>
             </div>
             </div>
         </div>
     }
+}
+
+fn fn_btn_callback(
+    _word_record: Option<WordRecord>,
+    state: UseStateHandle<String>,
+    word_index: i32,
+    input_level: String,
+) -> Callback<MouseEvent> {
+    Callback::from(move |_: MouseEvent| {
+        if _word_record.is_none() {
+            return;
+        }
+        let _state = state.clone();
+        let _word_record = _word_record.clone();
+        let input_level = input_level.clone();
+        spawn_local(async move {
+            let word_record = _word_record.unwrap();
+            let w = word_record.word.clone();
+            if word_index >= 0 {
+                user_word_update(word_record.word, word_record.mean, input_level, word_index).await;
+            } else {
+                user_word_in(word_record.word, word_record.mean, input_level).await;
+            }
+            getw_user_all().await;
+            _state.set(w);
+        });
+    })
 }
 
 fn get_word_list() -> Vec<String> {
@@ -146,17 +187,4 @@ fn get_word_list() -> Vec<String> {
         }
     }
     words
-}
-
-fn add_event_listener() {
-    let a = Closure::<dyn FnMut()>::new(move || {
-        log!("ok");
-    });
-    let caption = document().get_elements_by_class_name("ytp-caption-segment");
-    let e = caption.get_with_index(0).unwrap();
-    let ee = e.parent_element().unwrap();
-    ee.dyn_ref::<HtmlElement>()
-        .expect("#green-square be an `HtmlElement`")
-        .set_onclick(Some(a.as_ref().unchecked_ref()));
-    a.forget();
 }

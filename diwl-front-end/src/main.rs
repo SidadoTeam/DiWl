@@ -21,6 +21,7 @@ use yew::prelude::*;
 use crate::{
     popup_window::{PopProps, PopupWindow},
     ui_style::init_app_style,
+    ui_tools::add_event_listener,
 };
 
 fn main() {
@@ -56,30 +57,27 @@ fn main() {
 
     let _ = document().body().unwrap().append_child(&node);
 
-    let div = document().get_element_by_id("element_id");
-    if div.is_some() {
-        let div = div.unwrap();
-        yew::Renderer::<PopupWindow>::with_root_and_props(
-            div,
-            PopProps {
-                selected_word: String::new(),
-            },
-        )
-        .render();
-    }
+    //let div = document().get_element_by_id("element_id");
+    // if div.is_some() {
+    //     let div = div.unwrap();
+    //     yew::Renderer::<PopupWindow>::with_root_and_props(
+    //         div,
+    //         PopProps {
+    //             selected_word: String::new(),
+    //         },
+    //     )
+    //     .render();
+    // }
 
-    let caption = document().get_elements_by_class_name("ytp-caption-segment");
-    let c = caption.get_with_index(0);
-    if c.is_some() {
-        log!(c);
-    }
 
     init();
-
     init_app_style();
 
     spawn_local(async {
         getw_common_all().await;
-        log!("common word list loaded size:{}", getw_common_len());
+        log!("common word list loaded size:", getw_common_len());
+        getw_user_all().await;
+        log!("word list loaded size:", getw_user_len());
+        add_event_listener();
     });
 }
