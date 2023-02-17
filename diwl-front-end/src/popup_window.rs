@@ -58,9 +58,9 @@ pub fn popup(props: &PopProps) -> Html {
         };
         let mut css = String::new();
         if name == *selected_word {
-            css = "button bg-color-gray padding-word".to_string();
+            css = get_app_style() + " button bg-color-gray padding-word";
         } else {
-            css = "button padding-word".to_string();
+            css = get_app_style() + " button padding-word";
         }
         let word_html = html! {<span onclick={word_onclick} class={css} >{name}</span>};
         word_html_list.push(word_html);
@@ -68,9 +68,9 @@ pub fn popup(props: &PopProps) -> Html {
 
     html! {
         // <div class ={String::from(sty.get_class_name())}>
-        <div class ="card opx-80" >
-            <div class="" >
-            <button class="button color-white-1 font-size-15" onclick={Callback::from( |e:MouseEvent| {
+        <div class={get_app_style()} >
+        <div class ={get_app_style()+ " mcard opx-90 "} >
+            <button class={get_app_style() + " button color-white-1 font-size-15"} onclick={Callback::from( |e:MouseEvent| {
                 remove_popup("m_popup");
             })}>
                 { "Close" }
@@ -80,7 +80,7 @@ pub fn popup(props: &PopProps) -> Html {
             {word_html_list}
             </div>
 
-            <div class="word-card">
+            <div class={get_app_style() + " word-card"}>
                 //显示选中的单词
                 <div style="font-size:24px;margin-top:1px;">{selected_word.to_string()}</div>
 
@@ -88,15 +88,15 @@ pub fn popup(props: &PopProps) -> Html {
                 if word_record.is_some(){
                     <div style = "margin-top:10px">{word_record.clone().unwrap().mean.clone()}</div>
                     <div style = "margin-top:5px">{"short: "}{get_short_mean(&word_record.clone().unwrap().mean.clone())}</div>
-                    <div style = "margin-top:5px;font-weight:500" class ="color-yell">{"level: "}{word_record.unwrap().level.to_string()}</div>
+                    <div style = "margin-top:5px;font-weight:500" class ={get_app_style()+" color-yell"}>{"level: "}{word_record.unwrap().level.to_string()}</div>
                 }else{
                     <div style = "margin-top:10px;color:gray;">{"unknown word!"}</div>
                 }
 
-                <p style="margin-top:5px;" class="align-buttom-right">
-                    <button onclick={fn_ignore} class="button diwl-button bg-color-black">{"Ignore this"}</button>
+                <p style="margin-top:5px;" class={get_app_style() + " align-buttom-right"}>
+                    <button onclick={fn_ignore} class={get_app_style() + " button diwl-button bg-color-black"}>{"Ignore this"}</button>
                     <span style="margin-left:20px" />
-                    <button onclick={fn_pickup} class="button diwl-button">{"Pick up"}</button>
+                    <button onclick={fn_pickup} class={get_app_style() +" button diwl-button"}>{"Pick up"}</button>
                 </p>
             </div>
             </div>

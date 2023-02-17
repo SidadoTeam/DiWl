@@ -6,3 +6,11 @@ setTimeout(() => {
         finalizeInit(instance, module);
     });
 }, 500);
+
+function openMpopup() {
+    console.log("open popup");
+    let d = document.getElementById("m_popup");
+    d.show();
+}
+
+window.openMpopup = openMpopup;

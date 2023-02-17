@@ -23,6 +23,9 @@ extern "C" {
 
     #[wasm_bindgen]
     fn userWordUpdate(word: String, mean: String, level: String, id: i32) -> JsValue;
+
+    #[wasm_bindgen]
+    pub fn openMpopup();
 }
 
 pub async fn user_word_in(word: String, mean: String, level: String) {
@@ -96,10 +99,8 @@ async fn getw_common(start_i: i32, page_size: i32) -> bool {
 pub fn query_word(in_word: &str) -> Option<String> {
     unsafe {
         //先在用户词典里查找
-        let mut w = None;
-        if w.is_some() {
-            w = wlist_user.iter().find(|w| w.word == in_word);
-        } else {
+        let mut w = wlist_user.iter().find(|w| w.word == in_word);
+        if w.is_none() {
             w = wlist_common.iter().find(|w| w.word == in_word);
         }
         if w.is_none() {
@@ -175,7 +176,7 @@ pub fn test_short_mean_all() {
 }
 
 #[warn(non_snake_case)]
-#[derive(Serialize, Deserialize,Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct WordRecord {
     pub word: String,
     pub level: String, //分级

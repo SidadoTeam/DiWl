@@ -27,7 +27,7 @@ use crate::{
 fn main() {
     // let object = JsValue::from("world");
     log!("Hello Yew 2");
-    yew::Renderer::<App>::new().render();
+    // yew::Renderer::<App>::new().render();
     //增加DOM操作
     let div: Element = document().create_element("div").unwrap();
     // Add content, classes etc.
@@ -51,7 +51,6 @@ fn main() {
 
     let div: Element = document().create_element("div").unwrap();
     // Add content, classes etc.
-    div.set_inner_html("Hello, World!");
     div.set_id("element_id");
     let node: Node = div.into();
 
@@ -78,6 +77,5 @@ fn main() {
         log!("common word list loaded size:", getw_common_len());
         getw_user_all().await;
         log!("word list loaded size:", getw_user_len());
-        add_event_listener();
     });
 }

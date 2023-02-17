@@ -1,6 +1,6 @@
 use std::fs::OpenOptions;
 
-use crate::data::*;
+use crate::{data::*, ui_tools::add_event_listener};
 use futures_util::stream::StreamExt;
 use gloo::utils::document;
 use gloo_console::log;
@@ -26,6 +26,9 @@ fn process(_last_lines: Option<[String; 4]>) -> Option<[String; 4]> {
     let mut last_lines = [String::new(), String::new(), String::new(), String::new()];
     if caption.length() > 4 {
         return _last_lines;
+    }
+    if caption.length() > 0 {
+        add_event_listener();
     }
     for i in 0..caption.length() {
         let c = caption.get_with_index(i);
