@@ -77,3 +77,4 @@ I don't want to do one-off projects, develop projects that must have real value,
 
 If you have a good idea, I suggest you do the same as me. The online team is different from the real one.
 
+[Run test code](https://github.com/SidadoTeam/DiWl/blob/master/README_RUN_TEST.md)
