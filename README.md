@@ -118,7 +118,7 @@ The address is also written to the test/address_contract.txt file
 
 > trunk build
 
-Since the wasm file cannot be loaded directly due to cross-domain issues, you need to run node read_wasm.js to put the wasm code into the js file.
+Since the wasm file cannot be loaded directly due to cross-domain issues, we need to run node read_wasm.js to put the wasm code into the js file.
 
 ### trunk.js
 trunk.js in the diwl-front-end directory is copied from the dist directory by Yew compiled to initialize wasm. Some changes need to be made, and they need to be copied and modified again after each compilation.
