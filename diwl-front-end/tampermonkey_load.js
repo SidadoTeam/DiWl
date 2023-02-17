@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         New Userscript
+// @name         diwl
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  try to take over the world!
 // @author       You
-// @match        *
+// @match        *://www.youtube.com/*
 // @icon
 // @grant GM_xmlhttpRequest
 // @grant GM_getValue
@@ -17,19 +17,24 @@
 
 (function() {
     'use strict';
-    console.log('hello tampermonkey');
+    var timestamp = new Date().getTime();
 
-    //let url = "http://localhost:8080/bundle.js";
-    //addElement('script',url);
-
-    addElement('script','http://localhost:8000/wasm_data.js');
+    console.log('hello tampermonkey',timestamp);
+    addElement('script',"http://localhost:8000/bundle.js?v="+timestamp);
+    addElement('script','http://localhost:8000/wasm_data.js?v='+timestamp);
     //addElement('script','http://localhost:8000/dist/trunk-template-a1ae4d3b612e8c1e.js');
-    addElement('script','http://localhost:8000/trunk.js');
-    addElement('script','http://localhost:8000/wasm_init.js');
+    addElement('script','http://localhost:8000/trunk.js?v='+timestamp);
+    addElement('script','http://localhost:8000/wasm_init.js?v='+timestamp);
+
+    //addElement('script','https://cdn.tailwindcss.com');
 
     function addElement(e,url){
         var script = document.createElement(e);
         script.src = url;
         document.head.appendChild(script);
     }
+
+    // await apiPromise;
+    // let res = await getwCommon(1, 200);
+    // console.log(res);
 })();
