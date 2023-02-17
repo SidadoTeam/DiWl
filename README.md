@@ -170,7 +170,7 @@ https://github.com/rust-rocksdb/rust-rocksdb/issues/528#
 https://substrate.stackexchange.com/questions/4620/build-rocksdb-failed-at-snappy-snappy-cc103336-error-invalid-output-constrai
 
 
-## 初始化单词表
+## Initializes the word list
 
 word_list.txt is a simple Chinese to English dictionary. Run node test/initWlist.js in the project root directory and the dictionary data will be added to the smart contract.
 
