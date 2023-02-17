@@ -1,5 +1,7 @@
 # DIWL: Project for Polkadot Europe Edition Hacks
 
+Demo Video: https://youtu.be/KrAORm_RMA8
+
 # Project name
 
 The project's name is DIWL. It means Dynamic Individuation Word List.
