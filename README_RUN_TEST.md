@@ -63,3 +63,4 @@ const api = await ApiPromise.create({ rpc: "ws://localhost:9944" });
 //const api = await ApiPromise.create({ rpc: "wss://rpc.shibuya.astar.network" });
 ```
 
+[Run test code](https://github.com/SidadoTeam/DiWl/blob/master/README_RUN_TEST.md)

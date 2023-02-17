@@ -76,3 +76,4 @@ The name of our team is: Sidado. It's a Chinese pronunciation from Siddhartha Ga
 I don't want to do one-off projects, develop projects that must have real value, and develop projects that are interconnected.
 
 If you have a good idea, I suggest you do the same as me. The online team is different from the real one.
+
