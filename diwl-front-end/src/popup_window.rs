@@ -1,7 +1,10 @@
 use crate::{data::*, ui_style::get_app_style, ui_tools::remove_popup};
+use futures::{stream::SplitSink, SinkExt, StreamExt};
 use gloo::{events::EventListener, utils::document};
 use gloo_console::log;
 use js_sys::Function;
+use reqwasm::websocket::{futures::WebSocket, Message};
+use serde_json::Value;
 use wasm_bindgen::{prelude::Closure, JsCast, JsValue};
 use wasm_bindgen_futures::spawn_local;
 use web_sys::HtmlElement;
@@ -19,7 +22,7 @@ pub fn popup(props: &PopProps) -> Html {
     //传入被选中的单词
     //state中记录选中单词的index
     //读取div 获得单词列表
-    let word_list = get_word_list();
+    let word_list = use_state(|| get_word_list());
     let f_word = word_list.get(0).unwrap().to_string();
     let selected_word = use_state(|| f_word);
 
@@ -31,7 +34,55 @@ pub fn popup(props: &PopProps) -> Html {
             }
         }
     }
-    let (word_record, word_index) = query_word_record(&*selected_word);
+    // log!("popup", &*selected_word);
+    let word_record_state = use_state(|| query_word_record(&*selected_word));
+
+    let word_record = word_record_state.0.clone();
+    let word_index = word_record_state.1;
+
+    if word_record.is_none() {
+        let w = String::from(&*selected_word);
+        let ws = WebSocket::open("ws://127.0.0.1:8081").unwrap();
+        let (mut write, mut read) = ws.split();
+        let word_record_state = word_record_state.clone();
+        spawn_local(async move {
+            let _ = write.send(Message::Text(w)).await;
+
+            while let Some(msg) = read.next().await {
+                match msg {
+                    Ok(Message::Text(data)) => {
+                        // log!("from websocket: {}", data);
+                        //json解析
+                        let data = data.clone();
+                        let jsonx: Value = serde_json::from_str(&data).unwrap();
+                        let word_record = WordRecord {
+                            word: jsonx["word"].as_str().unwrap().to_string(),
+                            hitCount: "0".to_string(),
+                            level: "0".to_string(),
+                            // level: jsonx["collins"].to_string(),
+                            mean: jsonx["translation"].as_str().unwrap().to_string(),
+                            tag: "".to_string(),
+                            nfts: Vec::new(),
+                        };
+                        word_record_state.set((Some(word_record.clone()), 0));
+                        //添加数据到缓存列表 避免重复查询
+                        unsafe {
+                            wlist_common.push(word_record);
+                        }
+                    }
+                    Ok(Message::Bytes(b)) => {
+                        let decoded = std::str::from_utf8(&b);
+                        if let Ok(val) = decoded {
+                            log!("from websocket: {}", val);
+                        }
+                    }
+                    Err(e) => {
+                        // log::error!("ws: {:?}", e)
+                    }
+                }
+            }
+        });
+    }
 
     let fn_ignore = fn_btn_callback(
         word_record.clone(),
@@ -48,21 +99,23 @@ pub fn popup(props: &PopProps) -> Html {
     );
 
     let mut word_html_list = Vec::new();
-    for name in word_list {
+    for name in word_list.iter() {
         let _name = name.clone();
+        let word_record_state = word_record_state.clone();
         let word_onclick = {
             let state = selected_word.clone();
             Callback::from(move |_: MouseEvent| {
                 state.set(_name.clone());
+                word_record_state.set(query_word_record(&_name));
             })
         };
-        let mut css = String::new();
-        if name == *selected_word {
-            css = get_app_style() + " button bg-color-gray padding-word";
+        let mut _css = String::new();
+        if *name == *selected_word {
+            _css = get_app_style() + " button bg-color-gray padding-word";
         } else {
-            css = get_app_style() + " button padding-word";
+            _css = get_app_style() + " button padding-word";
         }
-        let word_html = html! {<span onclick={word_onclick} class={css} >{name}</span>};
+        let word_html = html! {<span onclick={word_onclick} class={_css} >{name}</span>};
         word_html_list.push(word_html);
     }
 

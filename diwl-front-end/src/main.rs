@@ -5,6 +5,7 @@ mod marking;
 mod popup_window;
 mod ui_style;
 mod ui_tools;
+mod websocket;
 
 use app::App;
 use data::*;
@@ -17,6 +18,7 @@ use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::spawn_local;
 use web_sys::{Element, Node};
 use yew::prelude::*;
+use crate::websocket::WebsocketService;
 
 use crate::{
     popup_window::{PopProps, PopupWindow},
@@ -27,7 +29,7 @@ use crate::{
 fn main() {
     // let object = JsValue::from("world");
     log!("Hello Yew 2");
-    // yew::Renderer::<App>::new().render();
+    yew::Renderer::<App>::new().render();
     //增加DOM操作
     let div: Element = document().create_element("div").unwrap();
     // Add content, classes etc.
@@ -68,7 +70,6 @@ fn main() {
     //     .render();
     // }
 
-
     init();
     init_app_style();
 
@@ -78,4 +79,8 @@ fn main() {
         getw_user_all().await;
         log!("word list loaded size:", getw_user_len());
     });
+
+    //let ws = WebsocketService::new();
+    //let _ = ws.tx.clone().try_send( "hello".to_string());
+    // log!(res);
 }
