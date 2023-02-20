@@ -8,7 +8,7 @@ use wasm_bindgen_futures::JsFuture;
 pub static mut wlist_common: Vec<WordRecord> = Vec::new();
 pub static mut wlist_user: Vec<WordRecord> = Vec::new();
 pub static max_cut_length: usize = 5;
-pub static max_level: usize = 1;
+pub static max_level: usize = 2;
 
 #[wasm_bindgen]
 extern "C" {
@@ -117,8 +117,10 @@ pub fn query_word(in_word: &str) -> Option<String> {
 
 pub fn query_word_record(in_word: &str) -> (Option<WordRecord>, i32) {
     unsafe {
+        log!("query_word_record", in_word);
         let ww = wlist_user.iter().enumerate().find(|w| w.1.word == in_word);
         if ww.is_some() {
+            log!("find word in word list", in_word);
             return (Some(ww.unwrap().1.clone()), ww.unwrap().0 as i32);
         }
 

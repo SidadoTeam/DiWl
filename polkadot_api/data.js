@@ -1,6 +1,7 @@
 
 // const address_contract = "ZfRoeLUReVfGf92nx2GWfTSMEZ9VFAZQxUPQgdAq8T5AvUe";
-const address_contract = "5D1fDzs7chqWgnBHSrKbX4c29x3oWwTHnhPAFxKAcRxWJt4A";
+// const address_contract = "5HPovikhLhNX6MP8z3k5rVfD7GD9cmjTrVxwkKm4D5LS3Q64"; //本地非测试服务器
+const address_contract = "5HPovikhLhNX6MP8z3k5rVfD7GD9cmjTrVxwkKm4D5LS3Q64";
 
 const contractAbi = {
     "source": {

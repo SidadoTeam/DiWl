@@ -12,10 +12,10 @@ console.log("getwCommon:" + res.length);
 //     console.log(ress);
 //     await userWordUpdate("hello", "你好啊", 0, 0);
 // }, 2000);
-await userWordUpdate("hello", "你好啊", 3, 0);
-
-setTimeout(async () => {
-    let ress = await getwUser(1, 200);
-    console.log(ress);
-    process.exit(0);
-}, 2000);
+let x = await userWordUpdate("hello", "你好啊", 3, 0);
+console.log(x);
+// setTimeout(async () => {
+//     let ress = await getwUser(1, 200);
+//     console.log(ress);
+//     process.exit(0);
+// }, 2000);

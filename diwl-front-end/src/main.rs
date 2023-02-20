@@ -29,7 +29,7 @@ use crate::{
 fn main() {
     // let object = JsValue::from("world");
     log!("Hello Yew 2");
-    yew::Renderer::<App>::new().render();
+    // yew::Renderer::<App>::new().render();
     //增加DOM操作
     let div: Element = document().create_element("div").unwrap();
     // Add content, classes etc.

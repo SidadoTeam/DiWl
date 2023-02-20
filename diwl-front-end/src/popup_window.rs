@@ -64,7 +64,7 @@ pub fn popup(props: &PopProps) -> Html {
                             tag: "".to_string(),
                             nfts: Vec::new(),
                         };
-                        word_record_state.set((Some(word_record.clone()), 0));
+                        word_record_state.set((Some(word_record.clone()), -1));
                         //添加数据到缓存列表 避免重复查询
                         unsafe {
                             wlist_common.push(word_record);
@@ -86,14 +86,14 @@ pub fn popup(props: &PopProps) -> Html {
 
     let fn_ignore = fn_btn_callback(
         word_record.clone(),
-        selected_word.clone(),
+        word_record_state.clone(),
         word_index,
         "0".to_string(),
     );
 
     let fn_pickup = fn_btn_callback(
         word_record.clone(),
-        selected_word.clone(),
+        word_record_state.clone(),
         word_index,
         "3".to_string(),
     );
@@ -159,7 +159,7 @@ pub fn popup(props: &PopProps) -> Html {
 
 fn fn_btn_callback(
     _word_record: Option<WordRecord>,
-    state: UseStateHandle<String>,
+    state: UseStateHandle<(Option<WordRecord>, i32)>,
     word_index: i32,
     input_level: String,
 ) -> Callback<MouseEvent> {
@@ -179,7 +179,8 @@ fn fn_btn_callback(
                 user_word_in(word_record.word, word_record.mean, input_level).await;
             }
             getw_user_all().await;
-            _state.set(w);
+            // _state.set(w);
+            _state.set(query_word_record(&w));
         });
     })
 }
